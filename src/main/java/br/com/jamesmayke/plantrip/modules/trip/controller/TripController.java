@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantRequestPayload;
+import br.com.jamesmayke.plantrip.modules.participant.entity.Participant;
+import br.com.jamesmayke.plantrip.modules.participant.repository.ParticipantRepository;
 import br.com.jamesmayke.plantrip.modules.trip.dto.TripRequestPayload;
 import br.com.jamesmayke.plantrip.modules.trip.dto.TripResponseData;
 import br.com.jamesmayke.plantrip.modules.trip.dto.TripResponsePayload;
@@ -26,6 +29,9 @@ public class TripController {
 
     @Autowired
     private TripRepository repository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
     
     @PostMapping("/")
     public TripResponsePayload create(@RequestBody TripRequestPayload payload) {
@@ -87,6 +93,21 @@ public class TripController {
 
             this.repository.save(tripRaw);
         }
+    }
+
+    @PostMapping("/{id}/invites")
+    public ResponseEntity<Participant> inviteParticipants(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload ) {
+        Optional<Trip> trip = this.repository.findById(id);
+
+        if (trip.isPresent()) {
+            Participant participant = new Participant(payload, trip.get());
+
+            this.participantRepository.save(participant);
+
+            return ResponseEntity.ok(participant);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }

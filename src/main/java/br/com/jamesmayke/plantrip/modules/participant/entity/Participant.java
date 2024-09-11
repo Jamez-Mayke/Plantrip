@@ -2,6 +2,7 @@ package br.com.jamesmayke.plantrip.modules.participant.entity;
 
 import java.util.UUID;
 
+import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantRequestPayload;
 import br.com.jamesmayke.plantrip.modules.trip.entity.Trip;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -71,5 +72,11 @@ public class Participant {
 
     public Participant() {}
 
+    public Participant(ParticipantRequestPayload payload, Trip trip) {
+        this.name = "";
+        this.email = payload.email();
+        this.isConfirmed = false;
+        this.trip = trip;
+    }
     
 }
