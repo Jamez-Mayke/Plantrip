@@ -1,8 +1,10 @@
 package br.com.jamesmayke.plantrip.modules.trip.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import br.com.jamesmayke.plantrip.modules.trip.dto.TripRequestPayload;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,63 +35,44 @@ public class Trip {
     @Column(name="owner_name", nullable=false)
     private String ownerName;
 
-    @Column(name="owner_emailt", nullable=false)
+    @Column(name="owner_email", nullable=false)
     private String ownerEmail;
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public String getDestination() {
         return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
     }
 
     public LocalDateTime getStartsAt() {
         return startsAt;
     }
 
-    public void setStartsAt(LocalDateTime startsAt) {
-        this.startsAt = startsAt;
-    }
-
     public LocalDateTime getEndsAt() {
         return endsAt;
-    }
-
-    public void setEndsAt(LocalDateTime endsAt) {
-        this.endsAt = endsAt;
     }
 
     public Boolean getIsConfirmed() {
         return isConfirmed;
     }
 
-    public void setIsConfirmed(Boolean isConfirmed) {
-        this.isConfirmed = isConfirmed;
-    }
-
     public String getOwnerName() {
         return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
     }
 
     public String getOwnerEmail() {
         return ownerEmail;
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public Trip(TripRequestPayload data) {
+        this.destination = data.destination();
+        this.startsAt = LocalDateTime.parse(data.starts_at(), DateTimeFormatter.ISO_DATE_TIME);
+        this.endsAt = LocalDateTime.parse(data.ends_at(), DateTimeFormatter.ISO_DATE_TIME);
+        this.isConfirmed = false;
+        this.ownerName = data.owner_name();
+        this.ownerEmail = data.owner_email();
     }
     
 }
