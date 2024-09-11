@@ -1,8 +1,9 @@
 package br.com.jamesmayke.plantrip.modules.participant.dto;
 
-public record ParticipantRequestPayload(
+public record ParticipantResponsePayload(
     String name,
-    String email
+    String email,
+    Boolean is_confirmed
 ) {
     
 }

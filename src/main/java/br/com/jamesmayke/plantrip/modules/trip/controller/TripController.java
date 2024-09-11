@@ -1,5 +1,6 @@
 package br.com.jamesmayke.plantrip.modules.trip.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantRequestPayload;
+import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantResponsePayload;
 import br.com.jamesmayke.plantrip.modules.participant.entity.Participant;
 import br.com.jamesmayke.plantrip.modules.participant.repository.ParticipantRepository;
 import br.com.jamesmayke.plantrip.modules.trip.dto.TripRequestPayload;
@@ -33,6 +35,8 @@ public class TripController {
     @Autowired
     private ParticipantRepository participantRepository;
     
+    // Trips
+
     @PostMapping("/")
     public TripResponsePayload create(@RequestBody TripRequestPayload payload) {
         Trip trip = new Trip(payload);
@@ -95,6 +99,8 @@ public class TripController {
         }
     }
 
+    // Participants
+
     @PostMapping("/{id}/invites")
     public ResponseEntity<Participant> inviteParticipants(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload ) {
         Optional<Trip> trip = this.repository.findById(id);
@@ -108,6 +114,19 @@ public class TripController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{tripId}/participants")
+    public ResponseEntity<List<ParticipantResponsePayload>> getAllParticipants(@PathVariable UUID tripId) {
+        Optional<Participant> participants = this.participantRepository.findByTripId(tripId);
+
+        List<ParticipantResponsePayload> participantsRaw = participants.stream().map(
+            participant -> new ParticipantResponsePayload(
+                participant.getName(), 
+                participant.getEmail(), 
+                participant.getIsConfirmed())).toList();
+        
+        return ResponseEntity.ok(participantsRaw);
     }
 
 }
