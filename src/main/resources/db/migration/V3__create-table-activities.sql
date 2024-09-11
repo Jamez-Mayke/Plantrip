@@ -1,5 +1,5 @@
-CREATE TABLE acvitivites (
-    id UUID DEFAULT RANDOM_UUID() PRIMARY KEY
+CREATE TABLE activities (
+    id UUID DEFAULT RANDOM_UUID() PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     occurs_at TIMESTAMP NOT NULL,
     trip_id UUID,

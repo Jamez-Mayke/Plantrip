@@ -1,8 +1,10 @@
 package br.com.jamesmayke.plantrip.modules.activity.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import br.com.jamesmayke.plantrip.modules.activity.dto.ActivityRequestPayload;
 import br.com.jamesmayke.plantrip.modules.trip.entity.Trip;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,4 +62,10 @@ public class Activity {
     }
 
     public Activity() {}
+
+    public Activity(ActivityRequestPayload payload, Trip trip) {
+        this.title = payload.title();
+        this.occursAt = LocalDateTime.parse(payload.occurs_at(), DateTimeFormatter.ISO_DATE_TIME);
+        this.trip = trip;
+    }
 }

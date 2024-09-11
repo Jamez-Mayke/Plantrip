@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.jamesmayke.plantrip.modules.activity.dto.ActivityListResponse;
+import br.com.jamesmayke.plantrip.modules.activity.dto.ActivityRequestPayload;
+import br.com.jamesmayke.plantrip.modules.activity.dto.ActivityResponsePayload;
+import br.com.jamesmayke.plantrip.modules.activity.entity.Activity;
+import br.com.jamesmayke.plantrip.modules.activity.repository.ActivityRepository;
 import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantRequestPayload;
 import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantResponsePayload;
 import br.com.jamesmayke.plantrip.modules.participant.entity.Participant;
@@ -34,6 +39,9 @@ public class TripController {
 
     @Autowired
     private ParticipantRepository participantRepository;
+
+    @Autowired
+    private ActivityRepository activityRepository;
     
     // Trips
 
@@ -127,6 +135,34 @@ public class TripController {
                 participant.getIsConfirmed())).toList();
         
         return ResponseEntity.ok(participantsRaw);
+    }
+
+    // Activities
+
+    @PostMapping("/{tripId}/activities")
+    public ResponseEntity<ActivityResponsePayload> createActivity(@PathVariable UUID tripId, @RequestBody ActivityRequestPayload payload) {
+        Optional<Trip> trip = this.repository.findById(tripId);
+
+        if (trip.isPresent()) {
+            Activity activity = new Activity(payload, trip.get());
+
+            this.activityRepository.save(activity);
+
+            return ResponseEntity.ok(new ActivityResponsePayload(activity.getId()));
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{tripId}/activities")
+    public ResponseEntity<List<ActivityListResponse>> getAllActivities(@PathVariable UUID tripId) {
+        Optional<Trip> trip = this.repository.findById(tripId);
+        if (trip.isPresent()) {
+            List<ActivityListResponse> allActivities = this.activityRepository.findByTripId(tripId);
+            return ResponseEntity.ok(allActivities);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }
