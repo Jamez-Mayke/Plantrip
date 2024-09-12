@@ -2,6 +2,7 @@ package br.com.jamesmayke.plantrip.modules.link.entity;
 
 import java.util.UUID;
 
+import br.com.jamesmayke.plantrip.modules.link.dto.LinkRequestPayload;
 import br.com.jamesmayke.plantrip.modules.trip.entity.Trip;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,5 +60,11 @@ public class Link {
     }
 
     public Link() {}
+
+    public Link(LinkRequestPayload data, Trip trip) {
+        this.title = data.title();
+        this.link = data.link();
+        this.trip = trip;
+    }
     
 }

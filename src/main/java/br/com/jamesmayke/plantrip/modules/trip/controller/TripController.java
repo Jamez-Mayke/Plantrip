@@ -19,6 +19,10 @@ import br.com.jamesmayke.plantrip.modules.activity.dto.ActivityRequestPayload;
 import br.com.jamesmayke.plantrip.modules.activity.dto.ActivityResponsePayload;
 import br.com.jamesmayke.plantrip.modules.activity.entity.Activity;
 import br.com.jamesmayke.plantrip.modules.activity.repository.ActivityRepository;
+import br.com.jamesmayke.plantrip.modules.link.dto.LinkRequestPayload;
+import br.com.jamesmayke.plantrip.modules.link.dto.LinkResponsePayload;
+import br.com.jamesmayke.plantrip.modules.link.entity.Link;
+import br.com.jamesmayke.plantrip.modules.link.repository.LinkRepository;
 import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantRequestPayload;
 import br.com.jamesmayke.plantrip.modules.participant.dto.ParticipantResponsePayload;
 import br.com.jamesmayke.plantrip.modules.participant.entity.Participant;
@@ -42,6 +46,9 @@ public class TripController {
 
     @Autowired
     private ActivityRepository activityRepository;
+
+    @Autowired
+    private LinkRepository linkRepository;
     
     // Trips
 
@@ -167,6 +174,31 @@ public class TripController {
 
     // Links
 
-    
+    @PostMapping("/{tripId}/links")
+    public ResponseEntity<Link> createLink(@PathVariable UUID tripId, @RequestBody LinkRequestPayload payload) {
+        Optional<Trip> trip = this.repository.findById(tripId);
+
+        if (trip.isPresent()) {
+            Link link = new Link(payload, trip.get());
+
+            this.linkRepository.save(link);
+
+            return ResponseEntity.ok(link);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{tripId}/links")
+    public ResponseEntity<List<LinkResponsePayload>> getAllLinks(@PathVariable UUID tripId) {
+        Optional<Trip> trip = this.repository.findById(tripId);
+
+        if (trip.isPresent()) {
+            List<LinkResponsePayload> links = this.linkRepository.findByTripId(tripId);
+            return ResponseEntity.ok(links);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 
 }
