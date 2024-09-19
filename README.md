@@ -30,7 +30,7 @@ Este sistema permite organizar e gerenciar eventos de viagem, incluindo a criaç
 
 ## Passos para clonar o projeto e rodar localmente:
 1. Clone o repositório:
-    git clone https://github.com/seu-usuario/evento-viagem.git
+    git clone https://github.com/Jamez-Mayke/Plantrip
 
 2. Compile o projeto com Maven:
     mvn clean install
